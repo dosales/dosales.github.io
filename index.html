@@ -206,7 +206,7 @@
                     success: function(data) {
                         // Update page title and meta information
                         document.title = data.title + ' - ' + baseTitle;
-                        $('meta[name="description"]').attr('content', data.description || 'View details and price for ' + data.title);
+                        $('meta[name="description"]').attr('content', data.inner_description.replace(/<[^>]*>/g, '') || 'View details and price for ' + data.title);
                         $('meta[name="keywords"]').attr('content', data.title + ',Amazon,' + (data.keywords || 'shopping,online'));
                         $('link[rel="canonical"]').attr('href', baseUrl + '?product=' + productId);
                         
