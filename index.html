@@ -77,7 +77,7 @@
             var layer = layui.layer;
             var laytpl = layui.laytpl;
             var baseTitle = 'Amazon Choice Products';
-            var baseUrl = 'https://0api.top/geo/';
+            var baseUrl = 'https://dosales.github.io';
 
             // Initialization page
             $(document).ready(function() {
@@ -110,7 +110,7 @@
                 $('#breadcrumb').html('<a href="index.html">Home</a>');
                 
                 $.ajax({
-                    url: 'api/products.json',
+                    url: 'https://0api.top/geo/api/products.json',
                     method: 'GET',
                     success: function(data) {
                         var getTpl = document.getElementById('product-list-template').innerHTML;
@@ -130,7 +130,7 @@
             // Show product details
             function showProductDetail(productId) {
                 $.ajax({
-                    url: 'api/product/' + productId + '.json',
+                    url: 'https://0api.top/geo/api/product/' + productId + '.json',
                     method: 'GET',
                     success: function(data) {
                         // Update page title and meta information
