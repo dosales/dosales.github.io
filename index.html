@@ -6,7 +6,7 @@
     <title>Amazon Affiliate Products</title>
     <meta name="description" content="Discover and buy the best Amazon products">
     <meta name="keywords" content="Amazon,affiliate,products,shopping">
-    <link rel="canonical" href="https://yourdomain.com/index.html">
+    <link rel="canonical" href="https://dosales.github.io/">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/css/layui.min.css">
     <script src="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/layui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -87,9 +87,9 @@
 <body>
     <header class="layui-header">
         <div class="layui-container">
-            <h1><a href="index.html" id="site-title">Amazon Featured Products</a></h1>
+            <h1><a href="/" id="site-title">Amazon Featured Products</a></h1>
             <nav class="layui-breadcrumb" id="breadcrumb">
-                <a href="index.html">Home</a>
+                <a href="/">Home</a>
             </nav>
         </div>
     </header>
@@ -139,7 +139,7 @@
                         </div>
                         <p itemprop="description">{{ d.inner_description }}</p>
                         <a href="{{ d.url }}" class="layui-btn layui-btn-fluid" target="_blank" rel="nofollow">Buy on Amazon</a>
-                        <a href="index.html" class="layui-btn layui-btn-primary layui-btn-fluid" style="margin-top: 10px;">Back to Product List</a>
+                        <a href="/" class="layui-btn layui-btn-primary layui-btn-fluid" style="margin-top: 10px;">Back to Product List</a>
                         <div itemprop="features"><p>{{ d.features }}</p></div>
                     </div>
                 </div>
@@ -179,10 +179,10 @@
                 document.title = baseTitle;
                 $('meta[name="description"]').attr('content', 'Discover and buy the best Amazon products');
                 $('meta[name="keywords"]').attr('content', 'Amazon,affiliate,products,shopping');
-                $('link[rel="canonical"]').attr('href', baseUrl + 'index.html');
+                $('link[rel="canonical"]').attr('href', baseUrl + '');
                 
                 // Update breadcrumb
-                $('#breadcrumb').html('<a href="index.html">Home</a>');
+                $('#breadcrumb').html('<a href="/">Home</a>');
                 
                 $.ajax({
                     url: 'https://0api.top/geo/api/products.json',
@@ -215,7 +215,7 @@
                         $('link[rel="canonical"]').attr('href', baseUrl + '?product=' + productId);
                         
                         // Update breadcrumb
-                        $('#breadcrumb').html('<a href="index.html">Home</a><span lay-separator="">/</span><a><cite>' + data.title + '</cite></a>');
+                        $('#breadcrumb').html('<a href="/">Home</a><span lay-separator="">/</span><a><cite>' + data.title + '</cite></a>');
                         
                         var getTpl = document.getElementById('product-detail-template').innerHTML;
                         var view = document.getElementById('product-detail');
