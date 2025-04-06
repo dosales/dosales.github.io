@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Affiliate Products</title>
+    <meta name="description" content="Discover and buy the best Amazon products">
+    <meta name="keywords" content="Amazon,affiliate,products,shopping">
+    <link rel="canonical" href="https://yourdomain.com/index.html">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/css/layui.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/layui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+</head>
+<body>
+    <header class="layui-header">
+        <div class="layui-container">
+            <h1><a href="index.html" id="site-title">Amazon Featured Products</a></h1>
+            <nav class="layui-breadcrumb" id="breadcrumb">
+                <a href="index.html">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="layui-container">
+        <section id="product-list" class="layui-row layui-col-space15"></section>
+        <article id="product-detail" style="display:none;"></article>
+    </main>
+
+    <footer class="layui-footer">
+        <div class="layui-container">
+            <p>&copy; 2025 Amazon Affiliate Store. This website contains Amazon affiliate links.</p>
+        </div>
+    </footer>
+
+    <script type="text/html" id="product-list-template">
+        {{# layui.each(d, function(index, item){ }}
+        <div class="layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-header">{{ item.title }}</div>
+                <div class="layui-card-body">
+                    <img src="{{ item.image }}" alt="{{ item.title }}" class="layui-img">
+                    <p>Price: ${{ item.price }}</p>
+                    <a href="?product={{ item.id }}" class="layui-btn product-link" data-id="{{ item.id }}">Show</a>
+                </div>
+            </div>
+        </div>
+        {{# }); }}
+    </script>
+
+    <script type="text/html" id="product-detail-template">
+        <div class="layui-card" itemscope itemtype="http://schema.org/Product">
+            <div class="layui-card-header">
+                <h2 itemprop="name">{{ d.title }}</h2>
+            </div>
+            <div class="layui-card-body">
+                <div class="layui-row">
+                    <div class="layui-col-md6">
+                        <img src="{{ d.image }}" alt="{{ d.title }}" class="layui-img" itemprop="image">
+                    </div>
+                    <div class="layui-col-md6">
+                        <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                            <p>Price: <span itemprop="price">${{ d.price }}</span></p>
+                            <meta itemprop="priceCurrency" content="USD">
+                            <link itemprop="availability" href="http://schema.org/InStock">
+                        </div>
+                        <p itemprop="description">{{ d.description }}</p>
+                        <a href="{{ d.affiliateLink }}" class="layui-btn" target="_blank" rel="nofollow">在Amazon上购买</a>
+                        <a href="index.html" class="layui-btn layui-btn-primary">Back to product list</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script>
+        layui.use(['layer', 'laytpl'], function(){
+            var layer = layui.layer;
+            var laytpl = layui.laytpl;
+            var baseTitle = 'Amazon's Choice Products';
+            var baseUrl = 'https://0api.top/geo/';
+
+            // Initialization page
+            $(document).ready(function() {
+                var params = new URLSearchParams(window.location.search);
+                var productId = params.get('product');
+                
+                // Add event handling for product links
+                $(document).on('click', '.product-link', function(e) {
+                    e.preventDefault();
+                    var productId = $(this).data('id');
+                    showProductDetail(productId);
+                });
+                
+                if (productId) {
+                    showProductDetail(productId);
+                } else {
+                    loadProductList();
+                }
+            });
+
+            // Loading product list
+            function loadProductList() {
+                // Set the title and meta of the homepage
+                document.title = baseTitle;
+                $('meta[name="description"]').attr('content', 'Discover and buy the best Amazon products');
+                $('meta[name="keywords"]').attr('content', 'Amazon,affiliate,products,shopping');
+                $('link[rel="canonical"]').attr('href', baseUrl + 'index.html');
+                
+                // Update Breadcrumbs
+                $('#breadcrumb').html('<a href="index.html">Home</a>');
+                
+                $.ajax({
+                    url: 'api/products.json',
+                    method: 'GET',
+                    success: function(data) {
+                        var getTpl = document.getElementById('product-list-template').innerHTML;
+                        var view = document.getElementById('product-list');
+                        laytpl(getTpl).render(data, function(html){
+                            view.innerHTML = html;
+                        });
+                        $('#product-list').show();
+                        $('#product-detail').hide();
+                    },
+                    error: function() {
+                        layer.msg('Failed to load product list');
+                    }
+                });
+            }
+
+            // Show product details
+            function showProductDetail(productId) {
+                $.ajax({
+                    url: 'api/product/' + productId + '.json',
+                    method: 'GET',
+                    success: function(data) {
+                        // Update page title and meta information
+                        document.title = data.title + ' - ' + baseTitle;
+                        $('meta[name="description"]').attr('content', data.description || '查看 ' + data.title + ' 的详细信息和价格');
+                        $('meta[name="keywords"]').attr('content', data.title + ',Amazon,' + (data.keywords || 'shopping,online'));
+                        $('link[rel="canonical"]').attr('href', baseUrl + '?product=' + productId);
+                        
+                        // Update Breadcrumbs
+                        $('#breadcrumb').html('<a href="index.html">首页</a><span lay-separator="">/</span><a><cite>' + data.title + '</cite></a>');
+                        
+                        var getTpl = document.getElementById('product-detail-template').innerHTML;
+                        var view = document.getElementById('product-detail');
+                        laytpl(getTpl).render(data, function(html){
+                            view.innerHTML = html;
+                            // Update URL without refreshing the page
+                            if (history.pushState) {
+                                history.pushState({productId: productId}, data.title, '?product=' + productId);
+                            }
+                        });
+                        $('#product-list').hide();
+                        $('#product-detail').show();
+                    },
+                    error: function() {
+                        layer.msg('Failed to load product details');
+                    }
+                });
+            }
+
+            // Handling browser back and forward
+            window.onpopstate = function(event) {
+                var params = new URLSearchParams(window.location.search);
+                var productId = params.get('product');
+                if (productId) {
+                    showProductDetail(productId);
+                } else {
+                    loadProductList();
+                }
+            };
+        });
+    </script>
+</body>
+</html>
