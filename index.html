@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,69 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/css/layui.min.css">
     <script src="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/layui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .layui-header {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px 0;
+        }
+        #site-title {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .layui-breadcrumb a {
+            color: #fff !important;
+        }
+        .layui-card {
+            border-radius: 5px;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        .layui-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .layui-card-header {
+            font-weight: bold;
+            background-color: #f0f0f0;
+        }
+        .layui-card-body {
+            padding: 20px;
+        }
+        .layui-btn {
+            background-color: #ff9900;
+        }
+        .layui-btn-primary {
+            background-color: #fff;
+            color: #ff9900;
+            border-color: #ff9900;
+        }
+        .layui-footer {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        .product-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .price {
+            font-size: 24px;
+            color: #B12704;
+            margin: 15px 0;
+        }
+        #product-detail .layui-card {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <header class="layui-header">
@@ -21,26 +84,26 @@
         </div>
     </header>
 
-    <main class="layui-container">
-        <section id="product-list" class="layui-row layui-col-space15"></section>
+    <main class="layui-container" style="margin-top: 30px;">
+        <section id="product-list" class="layui-row layui-col-space20"></section>
         <article id="product-detail" style="display:none;"></article>
     </main>
 
     <footer class="layui-footer">
         <div class="layui-container">
-            <p>&copy; 2025 Amazon Affiliate Store. This website contains Amazon affiliate links.</p>
+            <p>&copy; 2023 Amazon Affiliate Store. This site contains Amazon affiliate links.</p>
         </div>
     </footer>
 
     <script type="text/html" id="product-list-template">
         {{# layui.each(d, function(index, item){ }}
-        <div class="layui-col-md3">
+        <div class="layui-col-md3 layui-col-sm6">
             <div class="layui-card">
                 <div class="layui-card-header">{{ item.title }}</div>
                 <div class="layui-card-body">
-                    <img src="{{ item.image }}" alt="{{ item.title }}" class="layui-img">
-                    <p>Price: ${{ item.price }}</p>
-                    <a href="?product={{ item.id }}" class="layui-btn product-link" data-id="{{ item.id }}">Show</a>
+                    <img src="{{ item.image }}" alt="{{ item.title }}" class="product-image">
+                    <p class="price">${{ item.price.toFixed(2) }}</p>
+                    <a href="?product={{ item.id }}" class="layui-btn layui-btn-fluid product-link" data-id="{{ item.id }}">View Details</a>
                 </div>
             </div>
         </div>
@@ -53,19 +116,19 @@
                 <h2 itemprop="name">{{ d.title }}</h2>
             </div>
             <div class="layui-card-body">
-                <div class="layui-row">
+                <div class="layui-row layui-col-space20">
                     <div class="layui-col-md6">
-                        <img src="{{ d.image }}" alt="{{ d.title }}" class="layui-img" itemprop="image">
+                        <img src="{{ d.image }}" alt="{{ d.title }}" class="product-image" itemprop="image">
                     </div>
                     <div class="layui-col-md6">
                         <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                            <p>Price: <span itemprop="price">${{ d.price }}</span></p>
+                            <p class="price" itemprop="price">${{ d.price.toFixed(2) }}</p>
                             <meta itemprop="priceCurrency" content="USD">
                             <link itemprop="availability" href="http://schema.org/InStock">
                         </div>
                         <p itemprop="description">{{ d.description }}</p>
-                        <a href="{{ d.affiliateLink }}" class="layui-btn" target="_blank" rel="nofollow">在Amazon上购买</a>
-                        <a href="index.html" class="layui-btn layui-btn-primary">Back to product list</a>
+                        <a href="{{ d.affiliateLink }}" class="layui-btn layui-btn-fluid" target="_blank" rel="nofollow">Buy on Amazon</a>
+                        <a href="index.html" class="layui-btn layui-btn-primary layui-btn-fluid" style="margin-top: 10px;">Back to Product List</a>
                     </div>
                 </div>
             </div>
@@ -76,15 +139,15 @@
         layui.use(['layer', 'laytpl'], function(){
             var layer = layui.layer;
             var laytpl = layui.laytpl;
-            var baseTitle = 'Amazon Choice Products';
-            var baseUrl = 'https://dosales.github.io';
+            var baseTitle = 'Amazon Featured Products';
+            var baseUrl = 'https://dosales.github.io/';
 
-            // Initialization page
+            // Initialize page
             $(document).ready(function() {
                 var params = new URLSearchParams(window.location.search);
                 var productId = params.get('product');
                 
-                // Add event handling for product links
+                // Add event handler for product links
                 $(document).on('click', '.product-link', function(e) {
                     e.preventDefault();
                     var productId = $(this).data('id');
@@ -98,15 +161,15 @@
                 }
             });
 
-            // Loading product list
+            // Load product list
             function loadProductList() {
-                // Set the title and meta of the homepage
+                // Set homepage title and meta
                 document.title = baseTitle;
                 $('meta[name="description"]').attr('content', 'Discover and buy the best Amazon products');
                 $('meta[name="keywords"]').attr('content', 'Amazon,affiliate,products,shopping');
                 $('link[rel="canonical"]').attr('href', baseUrl + 'index.html');
                 
-                // Update Breadcrumbs
+                // Update breadcrumb
                 $('#breadcrumb').html('<a href="index.html">Home</a>');
                 
                 $.ajax({
@@ -127,7 +190,7 @@
                 });
             }
 
-            // Show product details
+            // Show product detail
             function showProductDetail(productId) {
                 $.ajax({
                     url: 'https://0api.top/geo/api/product/' + productId + '.json',
@@ -135,12 +198,12 @@
                     success: function(data) {
                         // Update page title and meta information
                         document.title = data.title + ' - ' + baseTitle;
-                        $('meta[name="description"]').attr('content', data.description || '查看 ' + data.title + ' 的详细信息和价格');
+                        $('meta[name="description"]').attr('content', data.description || 'View details and price for ' + data.title);
                         $('meta[name="keywords"]').attr('content', data.title + ',Amazon,' + (data.keywords || 'shopping,online'));
                         $('link[rel="canonical"]').attr('href', baseUrl + '?product=' + productId);
                         
-                        // Update Breadcrumbs
-                        $('#breadcrumb').html('<a href="index.html">首页</a><span lay-separator="">/</span><a><cite>' + data.title + '</cite></a>');
+                        // Update breadcrumb
+                        $('#breadcrumb').html('<a href="index.html">Home</a><span lay-separator="">/</span><a><cite>' + data.title + '</cite></a>');
                         
                         var getTpl = document.getElementById('product-detail-template').innerHTML;
                         var view = document.getElementById('product-detail');
@@ -160,7 +223,7 @@
                 });
             }
 
-            // Handling browser back and forward
+            // Handle browser back and forward
             window.onpopstate = function(event) {
                 var params = new URLSearchParams(window.location.search);
                 var productId = params.get('product');
