@@ -1,4 +1,4 @@
 User-Agent: *
 Disallow: /login
 
-Sitemap: https://dosales.github.io/sitemap/sitemap_index_20250406.txt.gz
+Sitemap: https://dosales.github.io/sitemap_index_20250406.txt.gz
